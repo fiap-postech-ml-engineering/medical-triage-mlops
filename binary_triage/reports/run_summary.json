@@ -1,0 +1,102 @@
+{
+  "modelo_escolhido": "tfidf_lr_balanced",
+  "threshold_final": 0.4,
+  "n_treino": 6171,
+  "n_validacao": 1322,
+  "n_teste": 1323,
+  "distribuicao_target_completa": {
+    "ESPECIALISTA": 6422,
+    "CLINICO_GERAL": 2394
+  },
+  "metricas_teste": {
+    "precision_especialista": 0.8553639846743295,
+    "recall_especialista": 0.9263485477178424,
+    "f1_especialista": 0.8894422310756972,
+    "precision_clinico": 0.7455197132616488,
+    "recall_clinico": 0.5793871866295265,
+    "f1_clinico": 0.6520376175548589,
+    "f1_macro": 0.770739924315278,
+    "roc_auc": 0.8899432494596564,
+    "pr_auc": 0.9549504818178719
+  },
+  "metricas_teste_threshold_0.5": {
+    "precision_especialista": 0.9108352144469526,
+    "recall_especialista": 0.8371369294605809,
+    "f1_especialista": 0.8724324324324324,
+    "precision_clinico": 0.6407322654462243,
+    "recall_clinico": 0.7799442896935933,
+    "f1_clinico": 0.7035175879396985,
+    "f1_macro": 0.7879750101860654,
+    "roc_auc": 0.8899432494596564,
+    "pr_auc": 0.9549504818178719
+  },
+  "comparacao_validacao": {
+    "lsa_embeddings_lr": {
+      "precision_especialista": 0.7604,
+      "recall_especialista": 0.9886,
+      "f1_especialista": 0.8596,
+      "precision_clinico": 0.8429,
+      "recall_clinico": 0.1643,
+      "f1_clinico": 0.2751,
+      "f1_macro": 0.5673,
+      "roc_auc": 0.849,
+      "pr_auc": 0.9376
+    },
+    "tfidf_lr": {
+      "precision_especialista": 0.7873,
+      "recall_especialista": 0.9875,
+      "f1_especialista": 0.8761,
+      "precision_clinico": 0.8947,
+      "recall_clinico": 0.2841,
+      "f1_clinico": 0.4313,
+      "f1_macro": 0.6537,
+      "roc_auc": 0.8955,
+      "pr_auc": 0.9572
+    },
+    "two_stage_multiclass": {
+      "precision_especialista": 0.8265,
+      "recall_especialista": 0.9699,
+      "f1_especialista": 0.8925,
+      "precision_clinico": 0.849,
+      "recall_clinico": 0.454,
+      "f1_clinico": 0.5917,
+      "f1_macro": 0.7421,
+      "roc_auc": 0.8978,
+      "pr_auc": 0.9568
+    },
+    "tfidf_linearsvc_calibrated": {
+      "precision_especialista": 0.8621,
+      "recall_especialista": 0.9221,
+      "f1_especialista": 0.8911,
+      "precision_clinico": 0.7432,
+      "recall_clinico": 0.6045,
+      "f1_clinico": 0.6667,
+      "f1_macro": 0.7789,
+      "roc_auc": 0.9011,
+      "pr_auc": 0.9599
+    },
+    "tfidf_lr_balanced": {
+      "precision_especialista": 0.9108,
+      "recall_especialista": 0.838,
+      "f1_especialista": 0.8729,
+      "precision_clinico": 0.6422,
+      "recall_clinico": 0.7799,
+      "f1_clinico": 0.7044,
+      "f1_macro": 0.7887,
+      "roc_auc": 0.8963,
+      "pr_auc": 0.9578
+    },
+    "tfidf_meta_combined_lr": {
+      "precision_especialista": 0.9072,
+      "recall_especialista": 0.812,
+      "f1_especialista": 0.857,
+      "precision_clinico": 0.6065,
+      "recall_clinico": 0.7772,
+      "f1_clinico": 0.6813,
+      "f1_macro": 0.7692,
+      "roc_auc": 0.8801,
+      "pr_auc": 0.9521
+    }
+  },
+  "specialty_classification_report_teste": "                   precision    recall  f1-score   support\n\n      cardiologia     0.9476    0.8658    0.9048       313\ngastroenterologia     0.7674    0.8319    0.7984       119\n       neurologia     0.7512    0.9040    0.8205       177\n        oncologia     0.9375    0.8873    0.9117       355\n\n         accuracy                         0.8766       964\n        macro avg     0.8509    0.8723    0.8589       964\n     weighted avg     0.8856    0.8766    0.8788       964\n"
+}

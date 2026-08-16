@@ -1,0 +1,241 @@
+﻿python.exe : 2026-08-16 20:35:23,542 INFO Limpeza: 14438 linhas originais -> 9344 
+após remover 5094 linhas com rótulo binário conflitante entre duplicatas do mesmo 
+texto -> 8816 após deduplicar texto exato (528 linhas removidas por duplicidade 
+pura).
+No linha:1 caractere:359
++ ... age-mlops"; & ".venv\Scripts\python.exe" -m binary_triage.train 2>&1  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (2026-08-16 20:3...licidade pura).:Str 
+   ing) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+2026-08-16 20:35:23,579 INFO Split -> treino: 6171 (70.0%) | validação: 1322 
+(15.0%) | teste: 1323 (15.0%)
+2026-08-16 20:35:23,580 INFO   Distribuição target (treino): {'ESPECIALISTA': 
+72.8, 'CLINICO_GERAL': 27.2}
+2026-08-16 20:35:23,580 INFO   Distribuição target (validação): {'ESPECIALISTA': 
+72.8, 'CLINICO_GERAL': 27.2}
+2026-08-16 20:35:23,581 INFO   Distribuição target (teste): {'ESPECIALISTA': 72.9, 
+'CLINICO_GERAL': 27.1}
+2026-08-16 20:35:23,582 INFO 
+================================================================================
+2026-08-16 20:35:23,582 INFO COMPARAÇÃO DE CANDIDATOS (treino -> avaliação em 
+validação, threshold=0.5)
+2026-08-16 20:35:23,582 INFO 
+================================================================================
+2026-08-16 20:35:23,582 INFO Treinando candidato: tfidf_lr
+2026-08-16 20:35:25,594 INFO   tfidf_lr -> {'precision_especialista': 0.7873, 
+'recall_especialista': 0.9875, 'f1_especialista': 0.8761, 'precision_clinico': 
+0.8947, 'recall_clinico': 0.2841, 'f1_clinico': 0.4313, 'f1_macro': 0.6537, 
+'roc_auc': 0.8955, 'pr_auc': 0.9572}
+2026-08-16 20:35:25,594 INFO Treinando candidato: tfidf_lr_balanced
+2026-08-16 20:35:27,608 INFO   tfidf_lr_balanced -> {'precision_especialista': 
+0.9108, 'recall_especialista': 0.838, 'f1_especialista': 0.8729, 
+'precision_clinico': 0.6422, 'recall_clinico': 0.7799, 'f1_clinico': 0.7044, 
+'f1_macro': 0.7887, 'roc_auc': 0.8963, 'pr_auc': 0.9578}
+2026-08-16 20:35:27,608 INFO Treinando candidato: tfidf_linearsvc_calibrated
+2026-08-16 20:35:29,688 INFO   tfidf_linearsvc_calibrated -> 
+{'precision_especialista': 0.8621, 'recall_especialista': 0.9221, 
+'f1_especialista': 0.8911, 'precision_clinico': 0.7432, 'recall_clinico': 0.6045, 
+'f1_clinico': 0.6667, 'f1_macro': 0.7789, 'roc_auc': 0.9011, 'pr_auc': 0.9599}
+2026-08-16 20:35:29,688 INFO Treinando candidato: lsa_embeddings_lr
+2026-08-16 20:35:33,928 INFO   lsa_embeddings_lr -> {'precision_especialista': 
+0.7604, 'recall_especialista': 0.9886, 'f1_especialista': 0.8596, 
+'precision_clinico': 0.8429, 'recall_clinico': 0.1643, 'f1_clinico': 0.2751, 
+'f1_macro': 0.5673, 'roc_auc': 0.849, 'pr_auc': 0.9376}
+2026-08-16 20:35:33,929 INFO Treinando candidato: tfidf_meta_combined_lr
+2026-08-16 20:35:37,398 INFO   tfidf_meta_combined_lr -> 
+{'precision_especialista': 0.9072, 'recall_especialista': 0.812, 
+'f1_especialista': 0.857, 'precision_clinico': 0.6065, 'recall_clinico': 0.7772, 
+'f1_clinico': 0.6813, 'f1_macro': 0.7692, 'roc_auc': 0.8801, 'pr_auc': 0.9521}
+2026-08-16 20:35:37,398 INFO Treinando candidato: two_stage_multiclass
+2026-08-16 20:35:40,445 INFO   two_stage_multiclass -> {'precision_especialista': 
+0.8265, 'recall_especialista': 0.9699, 'f1_especialista': 0.8925, 
+'precision_clinico': 0.849, 'recall_clinico': 0.454, 'f1_clinico': 0.5917, 
+'f1_macro': 0.7421, 'roc_auc': 0.8978, 'pr_auc': 0.9568}
+2026-08-16 20:35:40,450 INFO 
+                            precision_especialista  recall_especialista  
+f1_especialista  precision_clinico  recall_clinico  f1_clinico  f1_macro  roc_auc  
+pr_auc
+lsa_embeddings_lr                           0.7604               0.9886           
+0.8596             0.8429          0.1643      0.2751    0.5673   0.8490  0.9376
+tfidf_lr                                    0.7873               0.9875           
+0.8761             0.8947          0.2841      0.4313    0.6537   0.8955  0.9572
+two_stage_multiclass                        0.8265               0.9699           
+0.8925             0.8490          0.4540      0.5917    0.7421   0.8978  0.9568
+tfidf_linearsvc_calibrated                  0.8621               0.9221           
+0.8911             0.7432          0.6045      0.6667    0.7789   0.9011  0.9599
+tfidf_lr_balanced                           0.9108               0.8380           
+0.8729             0.6422          0.7799      0.7044    0.7887   0.8963  0.9578
+tfidf_meta_combined_lr                      0.9072               0.8120           
+0.8570             0.6065          0.7772      0.6813    0.7692   0.8801  0.9521
+2026-08-16 20:35:40,451 INFO >>> Melhor candidato direto por F1-macro em 
+validação: tfidf_lr_balanced
+2026-08-16 20:35:40,451 INFO >>> Comparação direto (tfidf_lr_balanced) vs 
+two-stage: recall_especialista direto=0.8380 | two-stage=0.9699 | f1_macro 
+direto=0.7887 | two-stage=0.7421
+2026-08-16 20:35:40,451 INFO 
+================================================================================
+2026-08-16 20:35:40,451 INFO TUNING DE THRESHOLD (modelo: tfidf_lr_balanced, 
+conjunto: validação)
+2026-08-16 20:35:40,451 INFO 
+================================================================================
+2026-08-16 20:35:40,964 INFO 
+           precision_especialista  recall_especialista  f1_especialista  
+precision_clinico  recall_clinico  f1_clinico  f1_macro  roc_auc  pr_auc
+threshold                                                                          
+                                                              
+0.30                       0.7853               0.9875           0.8749            
+ 0.8919          0.2758      0.4213    0.6481   0.8963  0.9578
+0.35                       0.8210               0.9668           0.8879            
+ 0.8298          0.4345      0.5704    0.7292   0.8963  0.9578
+0.40                       0.8575               0.9377           0.8958            
+ 0.7770          0.5822      0.6656    0.7807   0.8963  0.9578
+0.45                       0.8854               0.8982           0.8918            
+ 0.7159          0.6880      0.7017    0.7967   0.8963  0.9578
+0.50                       0.9108               0.8380           0.8729            
+ 0.6422          0.7799      0.7044    0.7887   0.8963  0.9578
+0.55                       0.9358               0.7715           0.8458            
+ 0.5833          0.8579      0.6945    0.7701   0.8963  0.9578
+0.60                       0.9477               0.6771           0.7898            
+ 0.5095          0.8997      0.6506    0.7202   0.8963  0.9578
+0.65                       0.9656               0.5826           0.7267            
+ 0.4575          0.9443      0.6164    0.6715   0.8963  0.9578
+0.70                       0.9870               0.4746           0.6410            
+ 0.4109          0.9833      0.5796    0.6103   0.8963  0.9578
+2026-08-16 20:35:40,965 INFO >>> Threshold final escolhido: 0.40
+2026-08-16 20:35:40,965 INFO >>> Métricas em validação nesse threshold: 
+{'precision_especialista': 0.8575, 'recall_especialista': 0.9377, 
+'f1_especialista': 0.8958, 'precision_clinico': 0.777, 'recall_clinico': 0.5822, 
+'f1_clinico': 0.6656, 'f1_macro': 0.7807, 'roc_auc': 0.8963, 'pr_auc': 0.9578}
+2026-08-16 20:35:40,965 INFO 
+================================================================================
+2026-08-16 20:35:40,965 INFO REFIT EM TREINO+VALIDAÇÃO E AVALIAÇÃO FINAL NO TESTE 
+(nunca visto até aqui)
+2026-08-16 20:35:40,965 INFO 
+================================================================================
+2026-08-16 20:35:43,363 INFO Métricas finais no TESTE (threshold=0.40): 
+{'precision_especialista': 0.8554, 'recall_especialista': 0.9263, 
+'f1_especialista': 0.8894, 'precision_clinico': 0.7455, 'recall_clinico': 0.5794, 
+'f1_clinico': 0.652, 'f1_macro': 0.7707, 'roc_auc': 0.8899, 'pr_auc': 0.955}
+2026-08-16 20:35:43,375 INFO 
+               precision    recall  f1-score   support
+
+CLINICO_GERAL     0.7455    0.5794    0.6520       359
+ ESPECIALISTA     0.8554    0.9263    0.8894       964
+
+     accuracy                         0.8322      1323
+    macro avg     0.8004    0.7529    0.7707      1323
+ weighted avg     0.8256    0.8322    0.8250      1323
+
+2026-08-16 20:35:43,617 INFO Para comparação — métricas no TESTE com threshold 
+padrão 0.5: {'precision_especialista': 0.9108, 'recall_especialista': 0.8371, 
+'f1_especialista': 0.8724, 'precision_clinico': 0.6407, 'recall_clinico': 0.7799, 
+'f1_clinico': 0.7035, 'f1_macro': 0.788, 'roc_auc': 0.8899, 'pr_auc': 0.955}
+2026-08-16 20:35:43,710 INFO Matriz de confusão (teste):
+                    pred_CLINICO_GERAL  pred_ESPECIALISTA
+real_CLINICO_GERAL                 208                151
+real_ESPECIALISTA                   71                893
+2026-08-16 20:35:43,804 INFO 
+================================================================================
+2026-08-16 20:35:43,804 INFO INTERPRETABILIDADE — TOP TERMOS DO MODELO FINAL 
+(tfidf_lr_balanced)
+2026-08-16 20:35:43,804 INFO 
+================================================================================
+2026-08-16 20:35:43,828 INFO 
+# Interpretabilidade — tfidf_lr_balanced
+
+
+## Top termos associados a ESPECIALISTA (coeficiente positivo)
+
+- `tfidf__cancer`: +5.2476
+- `tfidf__tumor`: +4.4572
+- `tfidf__carcinoma`: +3.9507
+- `tfidf__hypertension`: +3.6648
+- `tfidf__tumors`: +3.6235
+- `tfidf__myocardial`: +2.8265
+- `tfidf__coronary`: +2.6630
+- `tfidf__brain`: +2.3236
+- `tfidf__hypertensive`: +2.1410
+- `tfidf__heart`: +2.0470
+- `tfidf__cholesterol`: +2.0424
+- `tfidf__melanoma`: +2.0317
+- `tfidf__disease`: +1.9866
+- `tfidf__aortic`: +1.9643
+- `tfidf__diarrhea`: +1.9324
+- `tfidf__pressure`: +1.9017
+- `tfidf__blood pressure`: +1.8989
+- `tfidf__cerebral`: +1.8546
+- `tfidf__breast`: +1.8413
+- `tfidf__left`: +1.8124
+- `tfidf__malignant`: +1.8096
+- `tfidf__seizures`: +1.7563
+- `tfidf__leukemia`: +1.7297
+- `tfidf__lesions`: +1.7060
+- `tfidf__heart failure`: +1.6613
+- `tfidf__metastases`: +1.6183
+- `tfidf__stroke`: +1.6008
+- `tfidf__hepatitis`: +1.5803
+- `tfidf__carcinomas`: +1.5575
+- `tfidf__gastric`: +1.5471
+
+## Top termos associados a CLINICO_GERAL (coeficiente negativo)
+
+- `tfidf__postoperative`: -2.8605
+- `tfidf__hemorrhage`: -2.7988
+- `tfidf__chronic`: -2.7004
+- `tfidf__bleeding`: -2.6903
+- `tfidf__acute`: -2.5841
+- `tfidf__deletion`: -2.2922
+- `tfidf__recurrent`: -2.2382
+- `tfidf__infection`: -2.0972
+- `tfidf__infections`: -2.0172
+- `tfidf__abscess`: -1.9647
+- `tfidf__hypoxia`: -1.9337
+- `tfidf__grafts`: -1.9260
+- `tfidf__graft`: -1.7944
+- `tfidf__respiratory`: -1.7771
+- `tfidf__complications`: -1.7758
+- `tfidf__airway`: -1.7534
+- `tfidf__stress`: -1.6490
+- `tfidf__fatigue`: -1.6410
+- `tfidf__degrees`: -1.6308
+- `tfidf__eyes`: -1.6283
+- `tfidf__lung`: -1.6137
+- `tfidf__gene`: -1.5779
+- `tfidf__emergency`: -1.5712
+- `tfidf__twins`: -1.5628
+- `tfidf__atrophy`: -1.5552
+- `tfidf__inflammatory`: -1.5344
+2026-08-16 20:35:43,832 INFO Exemplos e análise de erros salvos em C:\Users\Patrick
+\Desktop\FIAP\medical-triage-mlops\binary_triage\reports\examples_and_errors.md
+2026-08-16 20:35:43,832 INFO 
+================================================================================
+2026-08-16 20:35:43,832 INFO SUB-CLASSIFICAÇÃO POR ESPECIALIDADE (apenas linhas 
+ESPECIALISTA)
+2026-08-16 20:35:43,832 INFO 
+================================================================================
+2026-08-16 20:35:43,834 INFO Distribuição de especialidade (treino, apenas 
+ESPECIALISTA): {'oncologia': 1655, 'cardiologia': 1456, 'neurologia': 828, 
+'gastroenterologia': 556}
+2026-08-16 20:35:46,030 INFO Relatório de classificação por especialidade (teste, 
+só linhas ESPECIALISTA):
+                   precision    recall  f1-score   support
+
+      cardiologia     0.9476    0.8658    0.9048       313
+gastroenterologia     0.7674    0.8319    0.7984       119
+       neurologia     0.7512    0.9040    0.8205       177
+        oncologia     0.9375    0.8873    0.9117       355
+
+         accuracy                         0.8766       964
+        macro avg     0.8509    0.8723    0.8589       964
+     weighted avg     0.8856    0.8766    0.8788       964
+
+2026-08-16 20:35:46,148 INFO Matriz de confusão por especialidade salva em C:\Users
+\Patrick\Desktop\FIAP\medical-triage-mlops\binary_triage\reports\confusion_matrix_s
+pecialty_test.png
+2026-08-16 20:35:46,524 INFO >>> Modelo final salvo em 
+C:\Users\Patrick\Desktop\FIAP\medical-triage-mlops\binary_triage\modelo.joblib 
+(com sub-classificador de especialidade embutido)
+2026-08-16 20:35:46,526 INFO Resumo completo salvo em C:\Users\Patrick\Desktop\FIAP
+\medical-triage-mlops\binary_triage\reports\run_summary.json

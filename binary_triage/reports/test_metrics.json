@@ -1,0 +1,15 @@
+{
+  "model": "tfidf_lr_balanced",
+  "threshold": 0.4,
+  "metrics": {
+    "precision_especialista": 0.8553639846743295,
+    "recall_especialista": 0.9263485477178424,
+    "f1_especialista": 0.8894422310756972,
+    "precision_clinico": 0.7455197132616488,
+    "recall_clinico": 0.5793871866295265,
+    "f1_clinico": 0.6520376175548589,
+    "f1_macro": 0.770739924315278,
+    "roc_auc": 0.8899432494596564,
+    "pr_auc": 0.9549504818178719
+  }
+}

@@ -1,0 +1,49 @@
+texto,especialidade
+"Paciente relata dor torácica intensa com irradiação para o braço esquerdo e sudorese.",cardiologia
+"Palpitações frequentes e falta de ar aos esforços há duas semanas.",cardiologia
+"Pressão arterial elevada persistente, histórico familiar de infarto.",cardiologia
+"Dor precordial em aperto, piora com esforço físico.",cardiologia
+"Arritmia detectada em exame de rotina, paciente assintomático.",cardiologia
+"Inchaço nas pernas e cansaço ao subir escadas, suspeita de insuficiência cardíaca.",cardiologia
+"Fratura exposta em antebraço direito após queda de bicicleta.",ortopedia
+"Dor lombar crônica que piora ao carregar peso.",ortopedia
+"Torção de tornozelo durante atividade esportiva, edema importante.",ortopedia
+"Dor no joelho ao subir escadas, estalos articulares frequentes.",ortopedia
+"Dor no ombro após levantamento de peso, limitação de movimento.",ortopedia
+"Suspeita de fratura no pulso após queda, inchaço e dor intensa.",ortopedia
+"Cefaleia intensa e recorrente com sensibilidade à luz.",neurologia
+"Formigamento e perda de força no braço direito.",neurologia
+"Episódios de convulsão relatados pela família.",neurologia
+"Tontura persistente com desequilíbrio ao caminhar.",neurologia
+"Perda de memória recente e dificuldade de concentração.",neurologia
+"Tremores nas mãos e rigidez muscular progressiva.",neurologia
+"Lesões avermelhadas e com coceira espalhadas pelo tronco.",dermatologia
+"Mancha escura de bordas irregulares no braço, crescendo há meses.",dermatologia
+"Acne severa no rosto e nas costas, sem melhora com tratamento tópico.",dermatologia
+"Coceira intensa no couro cabeludo com descamação.",dermatologia
+"Vermelhidão e descamação nas mãos após contato com produto químico.",dermatologia
+"Queda de cabelo progressiva nos últimos meses.",dermatologia
+"Febre e tosse persistente há três dias em criança de 4 anos.",pediatria
+"Recém-nascido com dificuldade para mamar e ganho de peso baixo.",pediatria
+"Criança com dor de ouvido e febre alta.",pediatria
+"Erupção cutânea em bebê de 8 meses após introdução alimentar.",pediatria
+"Vômitos e diarreia em criança de 2 anos há dois dias.",pediatria
+"Atraso no desenvolvimento motor de criança de 1 ano, avaliação pediátrica.",pediatria
+"Check-up de rotina, sem queixas específicas.",clinica_geral
+"Fadiga generalizada e mal-estar inespecífico há uma semana.",clinica_geral
+"Solicitação de exames de rotina para avaliação geral de saúde.",clinica_geral
+"Dor de garganta leve e coriza, sintomas de resfriado comum.",clinica_geral
+"Avaliação geral para renovação de atestado de saúde ocupacional.",clinica_geral
+"Dor de cabeça leve e mal-estar após dia de trabalho intenso.",clinica_geral
+"Atraso menstrual e dor pélvica leve.",ginecologia
+"Corrimento vaginal persistente com odor forte.",ginecologia
+"Acompanhamento pré-natal de rotina, 20 semanas de gestação.",ginecologia
+"Dor pélvica intensa durante o ciclo menstrual.",ginecologia
+"Sangramento fora do período menstrual, avaliação ginecológica solicitada.",ginecologia
+"Dor durante relação sexual, investigação ginecológica necessária.",ginecologia
+"Insônia recorrente associada a ansiedade generalizada.",psiquiatria
+"Episódios de tristeza profunda e perda de interesse nas atividades.",psiquiatria
+"Ataques de pânico frequentes nos últimos meses.",psiquiatria
+"Alterações de humor intensas e dificuldade de concentração.",psiquiatria
+"Pensamentos acelerados e dificuldade para dormir há semanas.",psiquiatria
+"Isolamento social e perda de apetite associados a quadro depressivo.",psiquiatria
