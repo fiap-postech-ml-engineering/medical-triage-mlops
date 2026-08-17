@@ -1,0 +1,78 @@
+services:
+  app:
+    # Builda a imagem a partir do Dockerfile multi-stage.
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+
+    container_name: triage-api
+
+    # Carrega variáveis locais sem hardcode no compose.
+    env_file:
+      - path: .env
+        required: false
+
+    ports:
+      - "8000:8000"
+
+    # Alinha permissões dos bind mounts com o usuário do host em dev.
+    user: "${UID:-1000}:${GID:-1000}"
+
+    # Volumes usados para desenvolvimento com hot-reload.
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+
+    command: uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload
+
+    # Valida se a API está respondendo dentro do container.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - triage-net
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: triage-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9090:9090"
+    depends_on:
+      - app
+    networks:
+      - triage-net
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    container_name: triage-grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    volumes:
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - triage-net
+
+networks:
+  triage-net:
+    driver: bridge
+
+volumes:
+  grafana-data:

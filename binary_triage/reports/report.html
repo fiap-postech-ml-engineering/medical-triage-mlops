@@ -1,0 +1,621 @@
+<title>Triagem Clínico Geral × Especialista</title>
+<style>
+  :root {
+    color-scheme: light;
+    --plane:      #f9f9f7;
+    --surface:    #fcfcfb;
+    --surface-2:  #f3f2ee;
+    --ink:        #0b0b0b;
+    --ink-2:      #52514e;
+    --muted:      #898781;
+    --grid:       #e1e0d9;
+    --baseline:   #c3c2b7;
+    --border:     rgba(11,11,11,0.10);
+    --border-strong: rgba(11,11,11,0.18);
+    --blue:       #2a78d6;
+    --blue-soft:  rgba(42,120,214,0.12);
+    --orange:     #eb6834;
+    --orange-soft: rgba(235,104,52,0.12);
+    --good:       #0ca30c;
+    --critical:   #d03b3b;
+    --seq-100:    #cde2fb;
+    --seq-250:    #86b6ef;
+    --seq-450:    #2a78d6;
+    --seq-650:    #104281;
+    --mono: ui-monospace, "Cascadia Code", "SFMono-Regular", Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --plane:      #0d0d0d;
+      --surface:    #1a1a19;
+      --surface-2:  #222220;
+      --ink:        #ffffff;
+      --ink-2:      #c3c2b7;
+      --muted:      #898781;
+      --grid:       #2c2c2a;
+      --baseline:   #383835;
+      --border:     rgba(255,255,255,0.10);
+      --border-strong: rgba(255,255,255,0.18);
+      --blue:       #3987e5;
+      --blue-soft:  rgba(57,135,229,0.16);
+      --orange:     #d95926;
+      --orange-soft: rgba(217,89,38,0.16);
+      --good:       #0ca30c;
+      --critical:   #e66767;
+      --seq-100:    #184f95;
+      --seq-250:    #1c5cab;
+      --seq-450:    #3987e5;
+      --seq-650:    #9ec5f4;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --plane:      #0d0d0d;
+    --surface:    #1a1a19;
+    --surface-2:  #222220;
+    --ink:        #ffffff;
+    --ink-2:      #c3c2b7;
+    --muted:      #898781;
+    --grid:       #2c2c2a;
+    --baseline:   #383835;
+    --border:     rgba(255,255,255,0.10);
+    --border-strong: rgba(255,255,255,0.18);
+    --blue:       #3987e5;
+    --blue-soft:  rgba(57,135,229,0.16);
+    --orange:     #d95926;
+    --orange-soft: rgba(217,89,38,0.16);
+    --good:       #0ca30c;
+    --critical:   #e66767;
+    --seq-100:    #184f95;
+    --seq-250:    #1c5cab;
+    --seq-450:    #3987e5;
+    --seq-650:    #9ec5f4;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--plane);
+    color: var(--ink);
+    font-family: var(--sans);
+    margin: 0;
+    padding: 48px 20px 96px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+
+  /* Masthead */
+  .masthead { display: flex; flex-direction: column; gap: 14px; }
+  .eyebrow {
+    font: 600 11px/1 var(--mono); letter-spacing: 0.09em; text-transform: uppercase;
+    color: var(--blue);
+  }
+  h1 { font-size: 30px; line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+  .subtitle { color: var(--ink-2); font-size: 15px; line-height: 1.6; max-width: 62ch; margin: 0; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .chip {
+    font: 500 12px/1 var(--mono); color: var(--ink-2); background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: 100px; padding: 6px 12px;
+  }
+
+  /* Stat tiles */
+  .tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border);
+    border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .tile { background: var(--surface); padding: 18px 16px; display: flex; flex-direction: column; gap: 6px; }
+  .tile .label { font: 600 10.5px/1.2 var(--mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+  .tile .value { font: 600 26px/1.1 var(--mono); font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .tile .sub { font-size: 12px; color: var(--ink-2); }
+  .tile .value.blue { color: var(--blue); }
+  .tile .value.orange { color: var(--orange); }
+
+  /* Sections */
+  section { display: flex; flex-direction: column; gap: 16px; }
+  .section-head { display: flex; flex-direction: column; gap: 4px; }
+  .section-num { font: 600 11px/1 var(--mono); color: var(--muted); letter-spacing: 0.08em; }
+  h2 { font-size: 19px; margin: 0; letter-spacing: -0.005em; }
+  p.lead { color: var(--ink-2); font-size: 14.5px; line-height: 1.65; max-width: 68ch; margin: 0; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; }
+  .card + .card { margin-top: 0; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } .tiles { grid-template-columns: repeat(2,1fr); } }
+
+  .callout { border: 1px solid var(--border); border-left: 3px solid var(--blue); border-radius: 8px;
+    padding: 14px 16px; background: var(--blue-soft); font-size: 13.5px; line-height: 1.6; color: var(--ink); }
+  .callout.warn { border-left-color: var(--orange); background: var(--orange-soft); }
+  .callout b { font-weight: 600; }
+
+  ul.findings { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  ul.findings li { display: flex; gap: 10px; font-size: 13.5px; line-height: 1.6; color: var(--ink-2); }
+  ul.findings li::before { content: "—"; color: var(--muted); flex-shrink: 0; }
+  ul.findings li b { color: var(--ink); font-weight: 600; }
+  code.inline { font: 500 12.5px var(--mono); background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 4px; padding: 1px 5px; }
+
+  /* bar chart */
+  .barchart { display: flex; flex-direction: column; gap: 10px; }
+  .bar-row { display: grid; grid-template-columns: 150px 1fr 64px; align-items: center; gap: 10px; }
+  .bar-row .bname { font-size: 12.5px; color: var(--ink-2); text-align: right; }
+  .bar-row .bname.strong { color: var(--ink); font-weight: 600; }
+  .bar-track { position: relative; height: 16px; background: var(--surface-2); border-radius: 4px; overflow: hidden; }
+  .bar-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 4px; cursor: default; }
+  .bar-row .bval { font: 600 12.5px var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+  .legend-row { display: flex; gap: 18px; align-items: center; margin-bottom: 2px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-2); }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* tooltip */
+  .viz-tooltip { position: fixed; pointer-events: none; background: var(--ink); color: var(--plane);
+    font: 500 11.5px var(--mono); padding: 5px 9px; border-radius: 6px; opacity: 0; transform: translate(-50%,-130%);
+    transition: opacity .1s ease; z-index: 20; white-space: nowrap; }
+  .viz-tooltip.show { opacity: 1; }
+
+  svg text { font-family: var(--sans); }
+  .axis-label { fill: var(--muted); font-size: 10.5px; }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+
+  /* term columns */
+  .term-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .term-col-head { display: flex; align-items: center; gap: 8px; font: 600 12.5px var(--mono); text-transform: uppercase;
+    letter-spacing: 0.04em; margin-bottom: 10px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .term-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .term-pill { font: 500 12px var(--mono); padding: 4px 9px; border-radius: 100px; border: 1px solid var(--border); color: var(--ink-2); }
+
+  /* confusion matrix */
+  .cm-wrap { display: grid; grid-template-columns: auto auto auto; gap: 2px; max-width: 460px; }
+  .cm-cell { padding: 16px; border-radius: 6px; display: flex; flex-direction: column; gap: 2px; min-height: 74px; justify-content: center; }
+  .cm-head { background: transparent; color: var(--muted); font: 600 10.5px var(--mono); text-transform: uppercase;
+    letter-spacing: .05em; display: flex; align-items: center; justify-content: center; text-align: center; padding: 6px; }
+  .cm-count { font: 700 20px var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+  .cm-tag { font-size: 10.5px; color: var(--ink-2); }
+  .cm-pct { font-size: 11px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+
+  /* metrics table */
+  table.metrics { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.metrics th { text-align: left; font: 600 10.5px var(--mono); text-transform: uppercase; letter-spacing: .05em;
+    color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border-strong); }
+  table.metrics td { padding: 9px 10px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  table.metrics td:first-child, table.metrics th:first-child { font-family: var(--mono); }
+  table.metrics tr.highlight td { background: var(--blue-soft); font-weight: 600; }
+  table.metrics td.num, table.metrics th.num { text-align: right; }
+
+  /* example cards */
+  .example { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .example-tag { display: inline-flex; align-self: flex-start; gap: 6px; align-items: center; font: 600 10.5px var(--mono);
+    text-transform: uppercase; letter-spacing: .04em; padding: 3px 9px; border-radius: 100px; }
+  .example-tag.ok { background: rgba(12,163,12,0.14); color: var(--good); }
+  .example-tag.fn { background: rgba(208,59,59,0.14); color: var(--critical); }
+  .example-text { font-size: 13px; line-height: 1.6; color: var(--ink-2); }
+  .example-text .snip { color: var(--ink); }
+  .example-meta { font: 500 11.5px var(--mono); color: var(--muted); }
+
+  footer { border-top: 1px solid var(--border); padding-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+  pre.code-block { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px;
+    font: 12.5px/1.6 var(--mono); overflow-x: auto; margin: 0; color: var(--ink); }
+  footer .fine { font-size: 12px; color: var(--muted); line-height: 1.6; }
+</style>
+
+<div class="page">
+
+  <div class="masthead">
+    <span class="eyebrow">Relatório de modelagem · Triagem médica</span>
+    <h1>Clínico Geral × Especialista</h1>
+    <p class="subtitle">Classificador binário treinado sobre <code class="inline">data/raw/laudos.csv</code> (Medical Abstracts TC Corpus, mapeado para especialidade) para apoiar o encaminhamento de laudos — decisão final continua sendo médica.</p>
+    <div class="meta-row">
+      <span class="chip">target: especialidade → CLINICO_GERAL / ESPECIALISTA</span>
+      <span class="chip">modelo: tfidf_lr_balanced</span>
+      <span class="chip">threshold: 0.40</span>
+      <span class="chip">seed: 42</span>
+    </div>
+  </div>
+
+  <div class="tiles">
+    <div class="tile"><span class="label">Linhas originais</span><span class="value">14.438</span><span class="sub">2 colunas: texto, especialidade</span></div>
+    <div class="tile"><span class="label">Após limpeza</span><span class="value">8.816</span><span class="sub">−5.622 por conflito/duplicidade</span></div>
+    <div class="tile"><span class="label">Recall Especialista</span><span class="value blue">92,6%</span><span class="sub">teste, threshold 0,40</span></div>
+    <div class="tile"><span class="label">Precision Especialista</span><span class="value orange">85,5%</span><span class="sub">teste, threshold 0,40</span></div>
+  </div>
+
+  <!-- 1. DATASET -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">01 — DATASET E TARGET</span>
+      <h2>Duas colunas, cinco especialidades, um target binário derivado</h2>
+      <p class="lead">O dataset real (<code class="inline">laudos.csv</code>) só tem <code class="inline">texto</code> e <code class="inline">especialidade</code> — não há idade, sexo, duração ou medicamentos como colunas separadas. O target binário foi derivado diretamente da especialidade original: <code class="inline">clinica_geral → CLINICO_GERAL</code>, as outras quatro → <code class="inline">ESPECIALISTA</code>.</p>
+    </div>
+
+    <div class="card">
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--blue)"></span>CLINICO_GERAL</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--orange)"></span>ESPECIALISTA (4 especialidades de origem)</div>
+      </div>
+      <div class="barchart" id="chart-classes"></div>
+    </div>
+
+    <div class="card">
+      <ul class="findings">
+        <li><b>Nulos:</b> zero valores nulos ou vazios em texto/especialidade.</li>
+        <li><b>Vazamento de rótulo encontrado:</b> 2.929 textos idênticos apareciam com especialidade diferente entre duplicatas (o corpus original mapeia categorias de doença, um mesmo abstract pode tocar mais de uma). Em <b>2.411</b> desses grupos o conflito afetava o próprio target binário — essas linhas foram <b>removidas</b> por serem ruído irresolvível, não uma decisão arbitrária de desempate.</li>
+        <li><b>Duplicidade pura:</b> mais 528 linhas eram texto repetido com o mesmo rótulo — dedupicadas para não inflar TF-IDF nem vazar o mesmo documento entre treino e teste.</li>
+        <li><b>Desbalanceamento:</b> 72,8% ESPECIALISTA vs 27,2% CLINICO_GERAL (~2,7:1) — moderado, tratável com <code class="inline">class_weight</code> e threshold, sem necessidade de reamostragem.</li>
+        <li><b>Tamanho do texto</b> não discrimina a classe (médias muito próximas: 1.184 vs 1.250 caracteres) — não é um atalho útil para o modelo.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 2. TEXTO -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">02 — PADRÕES NO TEXTO</span>
+      <h2>Especialidades têm vocabulário próprio; Clínico Geral não</h2>
+      <p class="lead">Termos abaixo são os coeficientes de maior peso do modelo final (TF-IDF + Logistic Regression) — não contagem bruta. Cada termo é uma feature do <code class="inline">TfidfVectorizer</code>; o sinal é o peso aprendido para a classe ESPECIALISTA.</p>
+    </div>
+    <div class="card">
+      <div class="term-cols">
+        <div>
+          <div class="term-col-head"><span class="dot" style="background:var(--orange)"></span>Empurram para ESPECIALISTA</div>
+          <div class="term-list" id="terms-esp"></div>
+        </div>
+        <div>
+          <div class="term-col-head"><span class="dot" style="background:var(--blue)"></span>Empurram para CLINICO_GERAL</div>
+          <div class="term-list" id="terms-cg"></div>
+        </div>
+      </div>
+    </div>
+    <div class="callout warn">
+      <b>Cuidado de interpretação:</b> nesta base, "clinica_geral" corresponde à categoria original do corpus <i>"general pathological conditions"</i> — um balde residual de artigos que não caem em oncologia/cardiologia/neurologia/gastroenterologia, não necessariamente "consulta de rotina". Por isso termos como <code class="inline">postoperative</code>, <code class="inline">hemorrhage</code>, <code class="inline">infection</code> aparecem do lado Clínico Geral: reflexo de como o corpus fonte foi construído, não uma afirmação clínica sobre o que caracteriza atendimento generalista.
+    </div>
+  </section>
+
+  <!-- 3. MODELAGEM -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">03 — COMPARAÇÃO DE MODELOS</span>
+      <h2>Seis candidatos, avaliados em validação (F1-macro)</h2>
+      <p class="lead">TF-IDF+LogisticRegression (com <code class="inline">class_weight="balanced"</code>) venceu. LinearSVC calibrado ficou muito próximo; embeddings via LSA/SVD tiveram o pior desempenho — a dimensionalidade reduzida perde justamente os termos raros e específicos (nomes de doença) que mais discriminam a classe.</p>
+    </div>
+    <div class="card">
+      <div class="barchart" id="chart-models"></div>
+    </div>
+    <div class="callout">
+      <b>Direto vs. duas etapas (multiclasse → binário):</b> no threshold padrão a arquitetura em duas etapas parecia melhor em recall (0,97 vs 0,84). Mas essa comparação era injusta — a two-stage não tinha threshold calibrado. Ajustando <i>ambas</i> ao mesmo ponto de operação (recall Especialista ≈ 0,94), a precisão empata: <b>85,75%</b> (direto) vs <b>85,63%</b> (duas etapas). A arquitetura extra não compra nada aqui — o modelo direto foi mantido por ser mais simples de treinar e servir.
+    </div>
+  </section>
+
+  <!-- 4. THRESHOLD -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">04 — CALIBRAÇÃO DE THRESHOLD</span>
+      <h2>0,50 não é o ponto certo para este problema</h2>
+      <p class="lead">Falso negativo (Especialista classificado como Clínico Geral) é o erro caro aqui — risco de atraso diagnóstico. Falso positivo custa apenas tempo de especialista. Por isso o critério de escolha foi: <b>o menor threshold — priorizando recall — entre os que mantêm recall Especialista ≥ 90%</b>, maximizando F1-macro nesse conjunto restrito.</p>
+    </div>
+    <div class="card">
+      <div class="legend-row">
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--orange)"></span>Recall Especialista</div>
+        <div class="legend-item"><span class="legend-swatch" style="background:var(--blue)"></span>Precision Especialista</div>
+      </div>
+      <div id="chart-threshold"></div>
+    </div>
+  </section>
+
+  <!-- 5. RESULTADO FINAL -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">05 — RESULTADO FINAL (TESTE, NUNCA VISTO)</span>
+      <h2>Matriz de confusão e métricas no conjunto de teste</h2>
+      <p class="lead">Refit em treino+validação, avaliado uma única vez em teste — 1.323 laudos, threshold 0,40.</p>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="cm-wrap">
+          <div class="cm-head"></div>
+          <div class="cm-head">Previsto<br/>Clínico Geral</div>
+          <div class="cm-head">Previsto<br/>Especialista</div>
+
+          <div class="cm-head" style="writing-mode: vertical-rl; transform: rotate(180deg);">Real Clínico Geral</div>
+          <div class="cm-cell" style="background: color-mix(in srgb, var(--seq-450) 22%, var(--surface));">
+            <span class="cm-count">208</span><span class="cm-tag">verdadeiro negativo · 57,9%</span>
+          </div>
+          <div class="cm-cell" style="background: color-mix(in srgb, var(--seq-450) 16%, var(--surface));">
+            <span class="cm-count">151</span><span class="cm-tag">falso positivo · 42,1%</span>
+          </div>
+
+          <div class="cm-head" style="writing-mode: vertical-rl; transform: rotate(180deg);">Real Especialista</div>
+          <div class="cm-cell" style="background: color-mix(in srgb, var(--seq-450) 8%, var(--surface));">
+            <span class="cm-count">71</span><span class="cm-tag">falso negativo · 7,4%</span>
+          </div>
+          <div class="cm-cell" style="background: color-mix(in srgb, var(--seq-450) 92%, var(--surface)); color:#fff;">
+            <span class="cm-count" style="color:#fff">893</span><span class="cm-tag" style="color:rgba(255,255,255,.85)">verdadeiro positivo · 92,6%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <table class="metrics">
+          <thead><tr><th>Métrica</th><th class="num">threshold 0,40</th><th class="num">threshold 0,50</th></tr></thead>
+          <tbody>
+            <tr class="highlight"><td>Recall Especialista</td><td class="num">0,926</td><td class="num">0,837</td></tr>
+            <tr><td>Precision Especialista</td><td class="num">0,855</td><td class="num">0,911</td></tr>
+            <tr><td>F1 Especialista</td><td class="num">0,889</td><td class="num">0,872</td></tr>
+            <tr><td>Recall Clínico Geral</td><td class="num">0,579</td><td class="num">0,780</td></tr>
+            <tr><td>Precision Clínico Geral</td><td class="num">0,746</td><td class="num">0,641</td></tr>
+            <tr><td>F1-macro</td><td class="num">0,771</td><td class="num">0,788</td></tr>
+            <tr><td>ROC-AUC</td><td class="num" colspan="2" style="text-align:right">0,890</td></tr>
+            <tr><td>PR-AUC</td><td class="num" colspan="2" style="text-align:right">0,955</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. SUB-CLASSIFICAÇÃO POR ESPECIALIDADE -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">06 — SUB-CLASSIFICAÇÃO POR ESPECIALIDADE</span>
+      <h2>ESPECIALISTA não é o fim da história — qual especialista?</h2>
+      <p class="lead">A decisão binária das seções anteriores só diz "precisa de especialista": pouco acionável numa triagem real. Um segundo classificador, treinado <b>só nas linhas ESPECIALISTA</b> (nunca vê Clínico Geral), aponta qual das 4 especialidades. <code class="inline">modelo.joblib</code> embute os dois: <code class="inline">predict()</code> decide o binário, <code class="inline">predict_detailed()</code> adiciona a especialidade quando aplicável.</p>
+    </div>
+
+    <div class="tiles" style="grid-template-columns: repeat(3, 1fr);">
+      <div class="tile"><span class="label">Acurácia (4 classes)</span><span class="value orange">87,7%</span><span class="sub">teste, 964 laudos ESPECIALISTA</span></div>
+      <div class="tile"><span class="label">F1-macro</span><span class="value">0,859</span><span class="sub">vs. baseline classe majoritária ~35%</span></div>
+      <div class="tile"><span class="label">Classes</span><span class="value" style="font-size:16px; line-height:1.3">cardio · onco<br/>neuro · gastro</span></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="cm-wrap" style="grid-template-columns: auto repeat(4, 1fr); max-width: 100%; font-size: 11.5px;" id="cm-specialty"></div>
+      </div>
+      <div class="card">
+        <table class="metrics">
+          <thead><tr><th>Especialidade</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">Support</th></tr></thead>
+          <tbody>
+            <tr><td>cardiologia</td><td class="num">0,948</td><td class="num">0,866</td><td class="num">0,905</td><td class="num">313</td></tr>
+            <tr><td>oncologia</td><td class="num">0,938</td><td class="num">0,887</td><td class="num">0,912</td><td class="num">355</td></tr>
+            <tr><td>neurologia</td><td class="num">0,751</td><td class="num">0,904</td><td class="num">0,821</td><td class="num">177</td></tr>
+            <tr><td>gastroenterologia</td><td class="num">0,767</td><td class="num">0,832</td><td class="num">0,798</td><td class="num">119</td></tr>
+            <tr class="highlight"><td>macro avg</td><td class="num">0,851</td><td class="num">0,872</td><td class="num">0,859</td><td class="num">964</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="lead" style="font-size:13px">Confusão mais comum: cardiologia↔neurologia e oncologia↔neurologia — plausível, já que sintomas cardiovasculares/neurológicos (dor torácica, tontura) e achados oncológicos inespecíficos se sobrepõem no vocabulário do abstract.</p>
+  </section>
+
+  <!-- 7. EXEMPLOS -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">07 — EXEMPLOS DE PREVISÃO</span>
+      <h2>O que o modelo acerta e onde ele erra</h2>
+    </div>
+    <div class="grid-2">
+      <div class="example">
+        <span class="example-tag ok">Acerto</span>
+        <div class="example-text"><span class="snip">"Endothelin family in human plasma and cerebrospinal fluid. To clarify whether endothelin may be present in human cerebrospinal fluid (CSF)…"</span></div>
+        <div class="example-meta">real: cardiologia → ESPECIALISTA · previsto: ESPECIALISTA (cardiologia, 92%) · p=0,59</div>
+      </div>
+      <div class="example">
+        <span class="example-tag fn">Falso negativo</span>
+        <div class="example-text"><span class="snip">"Sensorineural hearing loss: a reversible effect of valproic acid. We report 2 patients… on valproate (VPA) for complex partial seizures, developed sensorineural hearing loss…"</span></div>
+        <div class="example-meta">real: neurologia → ESPECIALISTA · previsto: CLINICO_GERAL · p=0,39</div>
+      </div>
+    </div>
+    <p class="lead" style="font-size:13px">O falso negativo ilustra o limite do modelo: sintoma (perda auditiva) e causa (efeito colateral de medicamento) não usam vocabulário tipicamente neurológico — o caso "parece" genérico até a suspeita clínica entrar em jogo, algo que só texto não captura bem.</p>
+  </section>
+
+  <!-- 8. LIMITAÇÕES -->
+  <section>
+    <div class="section-head">
+      <span class="section-num">08 — LIMITAÇÕES</span>
+      <h2>O que este modelo não é</h2>
+    </div>
+    <div class="card">
+      <ul class="findings">
+        <li><b>Idioma e gênero textual:</b> o corpus é composto por resumos acadêmicos em inglês (estilo "this study evaluated…"), não anotações de consulta em português. Não generaliza para laudos reais de prontuário sem re-treino em dados desse domínio.</li>
+        <li><b>"Clínico Geral" é um artefato do corpus fonte</b> (categoria "general pathological conditions"), não uma amostra representativa de atendimento de atenção primária real.</li>
+        <li><b>32% dos dados brutos foram descartados</b> por conflito de rótulo entre duplicatas — sinal de que o rótulo original já era ruidoso antes de qualquer modelagem.</li>
+        <li><b>Sem variáveis estruturadas reais</b> (idade, histórico, sinais vitais) — todo o sinal vem de texto e de features derivadas dele.</li>
+        <li><b>A especialidade prevista (seção 06) só é confiável quando a decisão binária já é ESPECIALISTA</b> — para um caso Clínico Geral, o sub-modelo ainda calcula probabilidades por especialidade, mas elas não têm significado (o modelo nunca viu exemplos negativos nesse treino).</li>
+        <li>Ferramenta de apoio à triagem baseada em padrões estatísticos do dataset de treino — <b>não substitui avaliação médica</b>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="section-head">
+      <span class="section-num">USO</span>
+      <h2 style="font-size:16px">Como carregar o modelo</h2>
+    </div>
+    <pre class="code-block">import joblib
+from binary_triage.model_wrapper import ThresholdedBinaryClassifier
+from binary_triage.features import TextMetaFeatures
+
+model = joblib.load("binary_triage/modelo.joblib")
+
+# decisão binária
+resultado = model.predict(df_com_coluna_texto)
+probabilidade = model.predict_proba(df_com_coluna_texto)
+
+# binário + especialidade provável (quando ESPECIALISTA), em um só passo
+detalhe = model.predict_detailed(df_com_coluna_texto)[0]
+# {'classificacao': 'ESPECIALISTA', 'probabilidade_especialista': 0.76,
+#  'especialidade_provavel': 'cardiologia',
+#  'probabilidades_especialidade': {'cardiologia': 0.92, ...}}
+
+# ou via CLI:
+# python binary_triage/predict.py "texto do laudo..."</pre>
+    <p class="fine">modelo.joblib · binary_triage/modelo.joblib · dois classificadores em um artefato: Pipeline binário (ColumnTransformer→TfidfVectorizer→LogisticRegression, threshold=0,40) + Pipeline de especialidade (mesmo tipo, treinado só nas linhas ESPECIALISTA), envoltos em ThresholdedBinaryClassifier · gerado a partir de data/raw/laudos.csv em 2026-08-16.</p>
+  </footer>
+
+</div>
+
+<div class="viz-tooltip" id="tooltip"></div>
+
+<script>
+(function() {
+  const tooltip = document.getElementById('tooltip');
+  function showTip(evt, text) {
+    tooltip.textContent = text;
+    tooltip.style.left = evt.clientX + 'px';
+    tooltip.style.top = evt.clientY + 'px';
+    tooltip.classList.add('show');
+  }
+  function hideTip() { tooltip.classList.remove('show'); }
+
+  // ---- Class distribution bar chart ----
+  const classData = [
+    { name: 'clinica_geral', count: 2394, group: 'cg' },
+    { name: 'oncologia', count: 2364, group: 'esp' },
+    { name: 'cardiologia', count: 2081, group: 'esp' },
+    { name: 'neurologia', count: 1183, group: 'esp' },
+    { name: 'gastroenterologia', count: 794, group: 'esp' },
+  ];
+  const maxClass = Math.max(...classData.map(d => d.count));
+  const classChart = document.getElementById('chart-classes');
+  classData.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    const color = d.group === 'cg' ? 'var(--blue)' : 'var(--orange)';
+    row.innerHTML = `
+      <span class="bname ${d.group==='cg' ? 'strong' : ''}">${d.name}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(d.count/maxClass*100).toFixed(1)}%; background:${color}"></div></div>
+      <span class="bval">${d.count.toLocaleString('pt-BR')}</span>
+    `;
+    const fill = row.querySelector('.bar-fill');
+    fill.addEventListener('mousemove', (e) => showTip(e, `${d.name}: ${d.count.toLocaleString('pt-BR')} laudos`));
+    fill.addEventListener('mouseleave', hideTip);
+    classChart.appendChild(row);
+  });
+
+  // ---- Model comparison bar chart ----
+  const modelData = [
+    { name: 'tfidf_lr_balanced', f1: 0.7887, chosen: true },
+    { name: 'tfidf_linearsvc_calibrated', f1: 0.7789 },
+    { name: 'tfidf_meta_combined_lr', f1: 0.7692 },
+    { name: 'two_stage_multiclass', f1: 0.7421 },
+    { name: 'tfidf_lr', f1: 0.6537 },
+    { name: 'lsa_embeddings_lr', f1: 0.5673 },
+  ];
+  const maxF1 = Math.max(...modelData.map(d => d.f1));
+  const modelChart = document.getElementById('chart-models');
+  modelData.forEach(d => {
+    const row = document.createElement('div');
+    row.className = 'bar-row';
+    const color = d.chosen ? 'var(--blue)' : 'var(--muted)';
+    row.innerHTML = `
+      <span class="bname ${d.chosen ? 'strong' : ''}">${d.name}${d.chosen ? ' ✓' : ''}</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${(d.f1/maxF1*100).toFixed(1)}%; background:${color}"></div></div>
+      <span class="bval">${d.f1.toFixed(3)}</span>
+    `;
+    const fill = row.querySelector('.bar-fill');
+    fill.addEventListener('mousemove', (e) => showTip(e, `${d.name}: F1-macro ${d.f1.toFixed(4)}`));
+    fill.addEventListener('mouseleave', hideTip);
+    modelChart.appendChild(row);
+  });
+
+  // ---- Threshold sweep line chart (SVG) ----
+  const thresholds = [0.30,0.35,0.40,0.45,0.50,0.55,0.60,0.65,0.70];
+  const recall =    [0.9875,0.9668,0.9377,0.8982,0.8380,0.7715,0.6771,0.5826,0.4746];
+  const precision = [0.7853,0.8210,0.8575,0.8854,0.9108,0.9358,0.9477,0.9656,0.9870];
+  const W = 800, H = 280, padL = 42, padR = 20, padT = 16, padB = 34;
+  const plotW = W - padL - padR, plotH = H - padT - padB;
+  const xScale = t => padL + (t - 0.30) / (0.70 - 0.30) * plotW;
+  const yScale = v => padT + (1 - v) * plotH;
+
+  function pathFor(vals) {
+    return vals.map((v,i) => `${i===0?'M':'L'} ${xScale(thresholds[i]).toFixed(1)} ${yScale(v).toFixed(1)}`).join(' ');
+  }
+
+  let gridlines = '';
+  for (let g = 0; g <= 1; g += 0.25) {
+    const y = yScale(g).toFixed(1);
+    gridlines += `<line class="gridline" x1="${padL}" y1="${y}" x2="${W-padR}" y2="${y}" />`;
+    gridlines += `<text class="axis-label" x="${padL-8}" y="${y}" text-anchor="end" dominant-baseline="middle">${g.toFixed(2)}</text>`;
+  }
+  let xticks = '';
+  thresholds.forEach(t => {
+    xticks += `<text class="axis-label" x="${xScale(t).toFixed(1)}" y="${H-padB+18}" text-anchor="middle">${t.toFixed(2)}</text>`;
+  });
+
+  const chosenX = xScale(0.40).toFixed(1);
+  const svg = `
+  <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:auto;">
+    ${gridlines}
+    ${xticks}
+    <line x1="${chosenX}" y1="${padT}" x2="${chosenX}" y2="${H-padB}" stroke="var(--baseline)" stroke-width="1" stroke-dasharray="3,3" />
+    <text class="axis-label" x="${chosenX}" y="${padT-4}" text-anchor="middle" fill="var(--ink-2)" font-weight="600">threshold escolhido: 0,40</text>
+    <path d="${pathFor(recall)}" fill="none" stroke="var(--orange)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="${pathFor(precision)}" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    ${thresholds.map((t,i) => `
+      <circle cx="${xScale(t).toFixed(1)}" cy="${yScale(recall[i]).toFixed(1)}" r="4" fill="var(--orange)" class="pt" data-label="threshold ${t.toFixed(2)} · recall ${recall[i].toFixed(3)}" />
+      <circle cx="${xScale(t).toFixed(1)}" cy="${yScale(precision[i]).toFixed(1)}" r="4" fill="var(--blue)" class="pt" data-label="threshold ${t.toFixed(2)} · precision ${precision[i].toFixed(3)}" />
+    `).join('')}
+  </svg>`;
+  const container = document.getElementById('chart-threshold');
+  container.innerHTML = svg;
+  container.querySelectorAll('.pt').forEach(pt => {
+    pt.style.cursor = 'default';
+    pt.addEventListener('mousemove', (e) => showTip(e, pt.getAttribute('data-label')));
+    pt.addEventListener('mouseleave', hideTip);
+  });
+
+  // ---- Specialty confusion matrix (4x4 heat grid) ----
+  const specialtyLabels = ['cardiologia', 'gastroenterologia', 'neurologia', 'oncologia'];
+  const specialtyCM = [
+    [271, 12, 27, 3],
+    [2, 99, 8, 10],
+    [6, 3, 160, 8],
+    [7, 15, 18, 315],
+  ];
+  const maxCell = Math.max(...specialtyCM.flat());
+  const cmContainer = document.getElementById('cm-specialty');
+  let cmHtml = '<div class="cm-head"></div>';
+  specialtyLabels.forEach(l => { cmHtml += `<div class="cm-head" style="writing-mode:initial;">${l.slice(0,5)}.</div>`; });
+  specialtyCM.forEach((row, i) => {
+    cmHtml += `<div class="cm-head" style="justify-content:flex-end; text-align:right; padding-right:8px;">${specialtyLabels[i].slice(0,5)}.</div>`;
+    row.forEach((val, j) => {
+      const intensity = (val / maxCell);
+      const isDiag = i === j;
+      const bg = `color-mix(in srgb, var(--seq-450) ${(intensity*90+4).toFixed(0)}%, var(--surface))`;
+      const textColor = intensity > 0.5 ? '#fff' : 'var(--ink)';
+      cmHtml += `<div class="cm-cell" style="background:${bg}; min-height:52px; padding:8px; ${isDiag ? 'font-weight:700;' : ''}" title="real ${specialtyLabels[i]} · previsto ${specialtyLabels[j]}: ${val}">
+        <span class="cm-count" style="font-size:15px; color:${textColor}">${val}</span>
+      </div>`;
+    });
+  });
+  cmContainer.innerHTML = cmHtml;
+
+  // ---- Top terms pills ----
+  const termsEsp = [
+    ['cancer', 5.25], ['tumor', 4.46], ['carcinoma', 3.95], ['hypertension', 3.66],
+    ['tumors', 3.62], ['myocardial', 2.83], ['coronary', 2.66], ['brain', 2.32],
+    ['hypertensive', 2.14], ['heart', 2.05], ['cholesterol', 2.04], ['melanoma', 2.03],
+  ];
+  const termsCg = [
+    ['postoperative', -2.86], ['hemorrhage', -2.80], ['chronic', -2.70], ['bleeding', -2.69],
+    ['acute', -2.58], ['deletion', -2.29], ['recurrent', -2.24], ['infection', -2.10],
+    ['infections', -2.02], ['abscess', -1.96], ['hypoxia', -1.93], ['grafts', -1.93],
+  ];
+  const espContainer = document.getElementById('terms-esp');
+  termsEsp.forEach(([term, w]) => {
+    const pill = document.createElement('span');
+    pill.className = 'term-pill';
+    pill.textContent = term;
+    pill.addEventListener('mousemove', (e) => showTip(e, `coef +${w.toFixed(2)}`));
+    pill.addEventListener('mouseleave', hideTip);
+    espContainer.appendChild(pill);
+  });
+  const cgContainer = document.getElementById('terms-cg');
+  termsCg.forEach(([term, w]) => {
+    const pill = document.createElement('span');
+    pill.className = 'term-pill';
+    pill.textContent = term;
+    pill.addEventListener('mousemove', (e) => showTip(e, `coef ${w.toFixed(2)}`));
+    pill.addEventListener('mouseleave', hideTip);
+    cgContainer.appendChild(pill);
+  });
+})();
+</script>

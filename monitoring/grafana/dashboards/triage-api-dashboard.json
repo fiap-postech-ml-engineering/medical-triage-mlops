@@ -1,0 +1,59 @@
+{
+  "title": "Medical Triage API",
+  "uid": "triage-api",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "5s",
+  "time": { "from": "now-15m", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total de requisições",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 8, "x": 0, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(http_requests_total)",
+          "legendFormat": "requests"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Latência p95 (s)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 8, "y": 0 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[1m])) by (le, path))",
+          "legendFormat": "{{path}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Taxa de erro (5xx / total)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 8, "x": 16, "y": 0 },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{status_code=~\"5..\"}[1m])) / sum(rate(http_requests_total[1m]))",
+          "legendFormat": "error rate"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Requisições por segundo (por rota)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 8 },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total[1m])) by (path)",
+          "legendFormat": "{{path}}"
+        }
+      ]
+    }
+  ]
+}
