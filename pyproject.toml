@@ -36,7 +36,7 @@ dependencies = [
     "typer",
     "uvicorn>=0.47.0",
 ]
-requires-python = ">=3.12,<3.15"
+requires-python = ">=3.12,<3.14"
 
 [project.optional-dependencies]
 dev = [
