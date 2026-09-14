@@ -100,12 +100,12 @@ class ThresholdedBinaryClassifier(BaseEstimator, ClassifierMixin):
                 "especialidade_provavel": None,
                 "probabilidades_especialidade": None,
             }
-            if specialty_proba is not None:
+            if specialty_proba is not None and sp_classes is not None:
                 probs = {
                     sp_classes[j]: float(specialty_proba[i, j]) for j in range(len(sp_classes))
                 }
                 row["probabilidades_especialidade"] = probs
                 if classificacao[i] == self.positive_label:
-                    row["especialidade_provavel"] = max(probs, key=probs.get)
+                    row["especialidade_provavel"] = max(probs, key=probs.__getitem__)
             results.append(row)
         return results

@@ -156,7 +156,7 @@ def extract_meta_features(texts: pd.Series) -> pd.DataFrame:
                 1 if kw_total > 0 else 0,
             ]
         )
-    return pd.DataFrame(rows, columns=META_FEATURE_NAMES, index=texts.index)
+    return pd.DataFrame(rows, columns=pd.Index(META_FEATURE_NAMES), index=texts.index)
 
 
 class TextMetaFeatures(BaseEstimator, TransformerMixin):
