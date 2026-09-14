@@ -20,6 +20,7 @@ classifiers = [
 ]
 license = { file = "LICENSE" }
 dependencies = [
+    "apache-airflow>=3.3.1",
     "fastapi>=0.136.1",
     "joblib>=1.5.3",
     "numpy>=2.5.0",
@@ -35,7 +36,7 @@ dependencies = [
     "typer",
     "uvicorn>=0.47.0",
 ]
-requires-python = "~= 3.12"
+requires-python = ">=3.12,<3.14"
 
 [project.optional-dependencies]
 dev = [
@@ -90,6 +91,7 @@ exclude = [
     "dist",
     "*.egg-info",
     "docs/",
+    "notebooks/",
 ]
 
 [tool.ruff.lint]
@@ -108,7 +110,6 @@ extend-ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["F401"]
-"notebooks/*" = ["T20"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["src"]
@@ -141,6 +142,7 @@ markers = [
 [tool.coverage.run]
 source = ["src"]
 branch = true
+parallel = true
 omit = ["tests/*", "**/__init__.py", "*/tests/*", "*/__pycache__/*"]
 
 [tool.coverage.report]
@@ -156,6 +158,9 @@ show_missing = true
 #################################################################################
 # UV                                                                            #
 #################################################################################
+
+[tool.ty.src]
+exclude = ["notebooks/"]
 
 [tool.uv]
 environments = [
