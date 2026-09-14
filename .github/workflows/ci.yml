@@ -32,10 +32,10 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
 
       - name: Ruff format check
-        run: uv run ruff format --check .
+        run: uv run --extra lint ruff format --check .
 
       - name: Ruff lint
-        run: uv run ruff check .
+        run: uv run --extra lint ruff check .
 
   type-check:
     name: Type check
@@ -50,7 +50,7 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
 
       - name: Type check with ty
-        run: uv run ty check .
+        run: uv run --extra typecheck ty check .
 
   test:
     name: Test (Python ${{ matrix.python-version }})
@@ -69,7 +69,7 @@ jobs:
       - uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
 
       - name: Run tests with coverage
-        run: uv run --python=${{ matrix.python-version }} coverage run -m pytest
+        run: uv run --extra test --python=${{ matrix.python-version }} coverage run -m pytest
 
       - name: Upload coverage data
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
@@ -98,13 +98,13 @@ jobs:
           merge-multiple: true
 
       - name: Combine coverage
-        run: uv run coverage combine
+        run: uv run --extra test coverage combine
 
       - name: Coverage report
         run: |
           echo '## Coverage Report' >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          uv run coverage report | tee -a $GITHUB_STEP_SUMMARY
+          uv run --extra test coverage report | tee -a $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
   all-checks-pass:
