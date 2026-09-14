@@ -82,11 +82,9 @@ class ThresholdedBinaryClassifier(BaseEstimator, ClassifierMixin):
         quando classificado como ESPECIALISTA e o sub-modelo está disponível —
         a especialidade mais provável com a distribuição completa.
         """
-        classificacao = self.predict(x)
-        proba_bin = self.predict_proba(x)
-        classes = list(self.classes_)
-        p_esp = proba_bin[:, classes.index(self.positive_label)]
-        p_cg = proba_bin[:, classes.index(self.negative_label)]
+        p_esp = self._positive_proba(x)
+        p_cg = 1.0 - p_esp
+        classificacao = np.where(p_esp >= self.threshold, self.positive_label, self.negative_label)
 
         specialty_proba, sp_classes = None, None
         if self.specialty_pipeline is not None:
