@@ -1,0 +1,41 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
+    container_name: inference-api-triage-mlops
+
+    env_file:
+      - path: .env
+        required: false
+
+    ports:
+      - "8000:8000"
+
+    # Alinha permissões dos bind mounts com o usuário do host em dev.
+    user: "${UID:-1000}:${GID:-1000}"
+
+    # Bind mounts para desenvolvimento com hot-reload; caminhos alinhados
+    # com o WORKDIR /app definido no Dockerfile.
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./models:/app/models
+      - ./logs:/app/logs
+
+    command: uvicorn src.api.api:api --host 0.0.0.0 --port 8000 --reload
+
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health').read()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - triage-net
+
+networks:
+  triage-net:
+    driver: bridge
