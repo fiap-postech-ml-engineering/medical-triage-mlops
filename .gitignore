@@ -2,6 +2,10 @@
 data/raw/*
 !data/raw/.gitkeep
 
+# Modelos e relatórios de treino (reproduzíveis via src/binary_triage/train.py)
+models/*.joblib
+models/reports/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
