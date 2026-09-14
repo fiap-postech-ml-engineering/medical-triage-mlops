@@ -142,6 +142,7 @@ markers = [
 [tool.coverage.run]
 source = ["src"]
 branch = true
+parallel = true
 omit = ["tests/*", "**/__init__.py", "*/tests/*", "*/__pycache__/*"]
 
 [tool.coverage.report]
