@@ -1,3 +1,11 @@
+# Dados brutos (reproduzíveis via src/binary_triage/dataset.py)
+data/raw/*
+!data/raw/.gitkeep
+
+# Modelos e relatórios de treino (reproduzíveis via src/binary_triage/train.py)
+models/*.joblib
+models/reports/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -52,3 +60,7 @@ site/
 # IDE files
 # .idea/
 # .vscode/
+
+# Notas e planos pessoais de decisões do projeto (não versionados)
+docs/_notas-decisoes-projeto.md
+/vamos-organizar-tudo-isso-tidy-abelson.md
