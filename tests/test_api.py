@@ -62,6 +62,19 @@ def test_classify_rejeita_texto_vazio(monkeypatch):
     assert response.status_code == 422
 
 
+def test_metrics_expoe_metricas_prometheus(monkeypatch):
+    with _client_with_fake_model(monkeypatch) as client:
+        client.post("/classify", json={"texto": "dor no peito e falta de ar"})
+        response = client.get("/metrics")
+
+    assert response.status_code == 200
+    body = response.text
+    assert "http_requests_total" in body
+    assert "http_request_duration_seconds" in body
+    assert 'triage_classifications_total{classificacao="ESPECIALISTA"}' in body
+    assert "triage_inference_duration_seconds" in body
+
+
 @pytest.mark.slow
 def test_classify_com_modelo_real_treinado():
     """Integração de ponta a ponta com o .joblib gerado por train.py.
