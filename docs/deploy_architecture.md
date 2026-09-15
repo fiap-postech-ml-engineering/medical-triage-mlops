@@ -13,6 +13,21 @@ A API expõe os seguintes endpoints (ver `src/api/routes.py`):
 
 A documentação interativa é gerada automaticamente pelo FastAPI e pode ser acessada em `/docs` (Swagger) ou `/redoc` quando a API estiver rodando.
 
+## ☁️ Estratégia de deploy em nuvem
+
+**Real-time, não batch.** A triagem decide a urgência de um laudo individual assim que ele chega — não há um momento natural para acumular laudos e processar em lote sem atrasar exatamente a decisão que o sistema existe para acelerar (um laudo `urgente` parado numa fila batch de horas anula o valor clínico do projeto). O desenho já reflete isso: API síncrona, `POST /classify` responde em dezenas de milissegundos, um laudo por requisição.
+
+Dado esse requisito (síncrono, stateless, container único, sem picos previsíveis de tráfego fora do ambiente hospitalar), a opção recomendada é um **serviço de containers serverless com scale-to-zero** — concretamente, **Google Cloud Run** (equivalentes diretos: AWS Fargate, Azure Container Apps):
+
+| Critério | Por que pesa a favor de Cloud Run aqui |
+|---|---|
+| Consome a imagem Docker como está | O `Dockerfile` multi-stage já produz uma imagem stateless com `HEALTHCHECK` em `/health` — sem adaptação, o mesmo artefato que roda em `docker-compose.yml` localmente é o que sobe em produção |
+| Autoscaling por requisição | Cresce e encolhe conforme o volume de laudos chegando, sem provisionar capacidade fixa para o pico — relevante porque o tráfego de um hospital varia por turno |
+| Scale-to-zero | Sem tráfego, custo zero de compute — cenário plausível para um MVP de triagem que ainda não está em todos os setores do hospital |
+| Sem orquestração de cluster | Não exige um cluster Kubernetes/ECS dedicado só para um único serviço stateless — reduz a superfície operacional para o escopo atual do projeto |
+
+Trade-off aceito: cold start ocasional (contêiner novo sobe em segundos após período ocioso) — hoje sem SLA de latência formal, esse custo é aceitável frente à simplicidade operacional. Se a triagem se tornar contínua 24/7 com volume alto e previsível, um serviço sempre-ativo (ECS Fargate com capacidade mínima, ou um cluster gerenciado) passaria a compensar o custo fixo em troca de eliminar o cold start.
+
 ## 🤔 O porquê da escolha dessa arquitetura
 
 FastAPI foi escolhido pela validação automática de payload via Pydantic, performance assíncrona nativa e integração direta com o ecossistema Python usado no restante do pipeline (scikit-learn, joblib).
@@ -47,7 +62,7 @@ Configuração via `.env` / `pydantic-settings` (`src/config/settings.py`), sem 
 
 | Limitação | Impacto |
 |---|---|
-| Sem CI/CD de build/push da imagem Docker | `docker build` ainda não faz parte do `ci.yml`; validado manualmente |
+| Sem push da imagem Docker para um registry | `ci.yml` builda a imagem (`docker-build`) a cada push/PR, mas não publica em nenhum registry |
 | Processo único (sem workers paralelos) | Sem paralelismo real de CPU em picos de carga |
 | Sem autoscaling | Gargalo sob alta demanda |
 | Sem versionamento de endpoint (`/v1/`) | Breaking changes afetam todos os clientes |
