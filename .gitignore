@@ -6,6 +6,9 @@ data/raw/*
 models/*.joblib
 models/reports/
 
+# Metadados locais do Airflow (AIRFLOW_HOME usado para testar DAGs localmente)
+.airflow/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

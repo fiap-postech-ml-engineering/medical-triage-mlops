@@ -78,7 +78,7 @@ packages = ["src"]
 [tool.ruff]
 line-length = 99
 target-version = "py313"
-src = ["src", "tests"]
+src = ["src", "tests", "dags"]
 exclude = [
     ".git",
     ".venv",

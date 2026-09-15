@@ -61,27 +61,27 @@ test-cov:
 ## Lint
 
 lint:
-	uv run ruff check src/ tests/
+	uv run ruff check src/ tests/ dags/
 
 lint-fix:
-	uv run ruff check src/ tests/ --fix
+	uv run ruff check src/ tests/ dags/ --fix
 
 lint-fix-unsafe:
-	uv run ruff check src/ tests/ --fix --unsafe-fixes
+	uv run ruff check src/ tests/ dags/ --fix --unsafe-fixes
 
 ## Formatação
 
 format:
-	uv run ruff format --check src/ tests/
+	uv run ruff format --check src/ tests/ dags/
 
 format-fix:
-	uv run ruff format src/ tests/
+	uv run ruff format src/ tests/ dags/
 
 format-diff:
-	uv run ruff format --diff src/ tests/
+	uv run ruff format --diff src/ tests/ dags/
 
 format-verbose:
-	uv run ruff format -v src/ tests/
+	uv run ruff format -v src/ tests/ dags/
 
 ## Checks combinados
 
