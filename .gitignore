@@ -9,6 +9,9 @@ models/reports/
 # Artefatos ONNX (reproduzíveis via src/binary_triage/export_onnx.py)
 models/*.onnx
 
+# Metadados locais do Airflow (AIRFLOW_HOME usado para testar DAGs localmente)
+.airflow/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]

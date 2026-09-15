@@ -59,15 +59,10 @@ test = [
 typecheck = [
     "ty",
 ]
-docs = [
-    "zensical",
-    "mkdocstrings-python",
-]
 
 [project.urls]
 bugs = "https://github.com/gudaoliveira/medical-triage-mlops/issues"
 changelog = "https://github.com/gudaoliveira/medical-triage-mlops/releases"
-documentation = "https://gudaoliveira.github.io/medical-triage-mlops/"
 homepage = "https://github.com/gudaoliveira/medical-triage-mlops"
 
 [project.scripts]
@@ -83,7 +78,7 @@ packages = ["src"]
 [tool.ruff]
 line-length = 99
 target-version = "py313"
-src = ["src", "tests"]
+src = ["src", "tests", "dags"]
 exclude = [
     ".git",
     ".venv",
