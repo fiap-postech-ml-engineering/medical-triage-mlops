@@ -37,7 +37,8 @@ class MetricsMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         duracao = time.perf_counter() - inicio
 
-        path = request.url.path
+        route = request.scope.get("route")
+        path = route.path if route is not None else "unmatched"
         http_requests_total.labels(
             method=request.method, path=path, status_code=response.status_code
         ).inc()
