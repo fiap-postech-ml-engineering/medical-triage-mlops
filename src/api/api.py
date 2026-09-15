@@ -7,6 +7,7 @@ import logging
 from fastapi import FastAPI
 
 from src.api import inference
+from src.api.metrics import MetricsMiddleware
 from src.api.middleware import RequestLoggingMiddleware
 from src.api.routes import router
 from src.config.settings import settings
@@ -25,4 +26,5 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 api = FastAPI(title="Medical Triage API", lifespan=lifespan)
 api.add_middleware(RequestLoggingMiddleware)
+api.add_middleware(MetricsMiddleware)
 api.include_router(router)
