@@ -13,9 +13,10 @@ WORKDIR /app
 FROM base AS builder
 
 COPY pyproject.toml uv.lock LICENSE README.md ./
-COPY src ./src
 
 RUN uv sync --frozen --no-dev
+
+COPY src ./src
 
 # Estágio final: nenhuma ferramenta de build, cache do uv ou dependência de
 # dev chega aqui — só o ambiente virtual já resolvido e o código-fonte.
