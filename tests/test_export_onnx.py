@@ -60,7 +60,7 @@ def test_export_pipeline_gera_onnx_com_paridade_numerica(tmp_path):
     x_onnx = np.array([["dor no peito"]], dtype=object)
     _, proba_onnx = sess.run(None, {input_name: x_onnx})
 
-    assert np.allclose(proba_onnx, proba_sklearn, atol=1e-5)
+    assert np.allclose(np.asarray(proba_onnx), proba_sklearn, atol=1e-5)
 
 
 @pytest.mark.slow

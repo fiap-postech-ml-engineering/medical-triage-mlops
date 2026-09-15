@@ -35,7 +35,9 @@ INITIAL_TYPE = [("texto", StringTensorType([None, 1]))]
 
 
 def export_pipeline(pipeline, output_path: Path) -> Path:
-    onx = to_onnx(pipeline, initial_types=INITIAL_TYPE, options={"zipmap": False})
+    # Stub de skl2onnx declara `initial_types` mais estrito do que a API real aceita
+    # (StringTensorType é o uso documentado/correto aqui, não um erro de tipo real).
+    onx = to_onnx(pipeline, initial_types=INITIAL_TYPE, options={"zipmap": False})  # ty: ignore[invalid-argument-type]
     output_path.write_bytes(onx.SerializeToString())
     logger.info(">>> Pipeline exportado para %s", output_path)
     return output_path
