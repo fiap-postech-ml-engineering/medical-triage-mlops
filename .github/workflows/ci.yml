@@ -79,6 +79,19 @@ jobs:
           path: .coverage.*
           include-hidden-files: true
 
+  docker-build:
+    name: Docker build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build runtime image
+        run: docker build --target runtime -t medical-triage-mlops:ci .
+
   coverage:
     name: Coverage
     needs: test
@@ -111,7 +124,7 @@ jobs:
   all-checks-pass:
     name: All checks pass
     if: always()
-    needs: [lint, type-check, test, coverage]
+    needs: [lint, type-check, test, docker-build, coverage]
     runs-on: ubuntu-latest
     steps:
       - name: Check job results
