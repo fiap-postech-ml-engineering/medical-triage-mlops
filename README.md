@@ -134,36 +134,34 @@ uv sync --extra dev --extra lint --extra test --extra typecheck
 ## 🔄 Fluxograma do projeto
 
 ```mermaid
-flowchart LR
-    subgraph Dados
-        KG[("Kaggle: Medical\nAbstracts TC Corpus")] --> RAW["data/raw/laudos.csv"]
+flowchart TD
+    subgraph TREINO["🔧 Caminho: Treino / Retreino"]
+        A["Kaggle
+Medical Abstracts TC Corpus"] --> B["data/raw/laudos.csv"]
+        B --> C["train
+src/binary_triage/train.py"]
+        C --> D["models/modelo.joblib"]
+        D --> E["export_onnx.py
+skl2onnx"]
+        E --> F["models/modelo.onnx"]
+        G["Airflow DAG
+triage_training_dag.py (@weekly)"] -->|load_data| B
+        G -->|train_and_save| C
     end
 
-    subgraph Treino [Treino / Retreino]
-        RAW --> TRAIN["src/binary_triage/train.py\ncomparação de candidatos +\ncalibração de threshold"]
-        TRAIN --> MODEL["models/modelo.joblib"]
-    end
-
-    subgraph Airflow [Orquestração — Airflow]
-        DAG["dags/triage_training_dag.py\n@weekly"]
-        DAG -->|load_data| RAW
-        DAG -->|train_and_save| TRAIN
-    end
-
-    subgraph Inferencia [Serviço de Inferência]
-        MODEL -->|"carregado 1x no startup\n(lifespan)"| API["FastAPI\nPOST /classify"]
-        API --> RESP["classificação +\nespecialidade provável"]
-    end
-
-    subgraph Observabilidade [Monitoramento]
-        API -->|"/metrics"| PROM["Prometheus"]
-        PROM --> GRAF["Grafana\n4 painéis"]
-    end
-
-    subgraph Latencia [Otimização de Latência]
-        MODEL --> EXPORT["export_onnx.py\n(skl2onnx)"]
-        EXPORT --> ONNX["models/modelo.onnx"]
-        ONNX --> BENCH["benchmark_onnx.py\np50/p95/p99\nsklearn vs ONNX Runtime"]
+    subgraph USO["🚀 Caminho: Uso da API"]
+        H["POST /classify
+texto do laudo"] --> I["API FastAPI
+localhost:8000"]
+        I --> J{"Modelo em
+Production carregado?"}
+        J -->|Não| K["⚠️ 503
+Modelo indisponível"]
+        J -->|Sim| L["✅ 200
+classificação + especialidade provável"]
+        I -->|"/metrics"| M["Prometheus"]
+        M --> N["Grafana
+4 painéis"]
     end
 ```
 
