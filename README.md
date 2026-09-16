@@ -163,6 +163,9 @@ classificação + especialidade provável"]
         M --> N["Grafana
 4 painéis"]
     end
+
+    D -.->|"carregado no startup
+(lifespan)"| I
 ```
 
 Um hospital recebe laudos em texto livre e precisa decidir rapidamente se um caso pode seguir para um **clínico geral** ou se deve ser encaminhado direto para um **especialista** (oncologia, cardiologia, neurologia, gastroenterologia). O `ThresholdedBinaryClassifier` treinado em `src/binary_triage/train.py` automatiza essa primeira decisão e, quando o caso é `ESPECIALISTA`, já indica a especialidade mais provável — reduzindo o tempo até o laudo chegar na fila certa.
