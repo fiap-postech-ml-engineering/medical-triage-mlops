@@ -2,7 +2,7 @@
 
 Sistema de triagem automática de laudos médicos (NLP), servido via API REST em container Docker, com pipeline de CI/CD (GitHub Actions), orquestração de retreino (Airflow), monitoramento (Prometheus + Grafana) e otimização de latência (ONNX). Projeto desenvolvido para o Tech Challenge da Fase 3 do curso de Machine Learning Engineering da FIAP.
 
-Para um resumo rápido, também temos um 🎥 Vídeo Explicativo em menos de 5 min (método STAR): `[A PREENCHER]`
+Para um resumo rápido, também temos um 🎥 [Vídeo Explicativo em menos de 5 min (método STAR)](https://youtu.be/oUKRrNStW5M)
 
 ---
 
